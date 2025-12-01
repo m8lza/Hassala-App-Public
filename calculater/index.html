@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حصالة المال الإحترافية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <button id="settings-button" class="settings-btn" title="الإعدادات">
+        <i class="fas fa-cog"></i>
+    </button>
+    
+    <button id="profile-button" class="profile-btn" title="حسابي">
+        <i class="fas fa-user-circle"></i>
+    </button>
+    
+    <div id="settings-modal" class="modal">
+        <div class="modal-content glass">
+            <span class="close-btn" data-modal="settings-modal">&times;</span> 
+            <h2><i class="fas fa-cog"></i> إعدادات التطبيق</h2>
+
+            <div class="settings-section">
+                
+                <div class="setting-item">
+                    <label for="bg-color-select"><i class="fas fa-palette"></i> لون الواجهة (الثيم):</label>
+                    <select id="bg-color-select">
+                        <option value="default">الوضع الليلي (افتراضي)</option>
+                        <option value="blue">الوضع الأزرق</option>
+                        <option value="red">الوضع الأحمر</option>
+                        <option value="green">الوضع الأخضر</option>
+                    </select>
+                </div>
+                
+                <div class="setting-item">
+                    <label><i class="fas fa-music"></i> تشغيل الموسيقى الخلفية:</label>
+                    <button id="toggle-music-button" class="button-green">تشغيل <i class="fas fa-play"></i></button>
+                    <audio id="background-music" loop>
+                        <source src="music/videoplayback.mp3" type="audio/mpeg"> 
+                        متصفحك لا يدعم وسم الصوت.
+                    </audio>
+                </div>
+                
+                <div class="setting-item volume-control">
+                    <label for="volume-slider"><i class="fas fa-volume-up"></i> مستوى الصوت:</label>
+                    <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
+                    <span id="volume-value">50%</span>
+                </div>
+                <div class="setting-item">
+                    <label><i class="fas fa-bell"></i> إشعارات Discord (Webhook):</label>
+                    <input type="text" id="webhook-url-input" placeholder="رابط Webhook هنا...">
+                </div>
+                <div class="setting-item"> 
+                    <button id="save-webhook-button" class="button-purple"><i class="fas fa-save"></i> حفظ الرابط</button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    <div id="profile-modal" class="modal">
+        <div class="modal-content glass">
+            <span class="close-btn" data-modal="profile-modal">&times;</span>
+            <div class="profile-header">
+                <i class="fas fa-user-circle profile-icon"></i>
+                <h2><i class="fas fa-wallet"></i> ملخص حسابي المالي</h2>
+                <p class="user-id">**حساب الحصالة الشخصي**</p>
+            </div>
+
+            <div class="profile-summary">
+                <div class="balance-card">
+                    <h3>الرصيد الكلي</h3>
+                    <p class="large-balance" id="profile-balance-ils">0.00 ILS</p> 
+                    <p class="small-balance" id="profile-balance-usd">0.00 USD</p>
+                </div>
+                
+                <div class="target-info">
+                    <h3>🎯 الهدف الحالي</h3>
+                    <p id="profile-target-amount">2100.00 ILS</p>
+                </div>
+                
+                <div class="progress-info">
+                    <h3>نسبة التقدم</h3>
+                    <div class="profile-progress-bar-bg">
+                        <div class="profile-progress-bar-fill" id="profile-progress-bar-fill"></div>
+                    </div>
+                    <p id="profile-progress-percentage">0%</p>
+                </div>
+
+                <div class="wishlist-summary-profile">
+                    <h3><i class="fas fa-gift"></i> خلاصة الأمنيات</h3>
+                    <p id="profile-wishlist-count"></p>
+                    <p id="profile-wishlist-needed"></p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <div id="denominations-modal" class="modal">
+        <div class="modal-content glass">
+            <span class="close-btn" data-modal="denominations-modal">&times;</span> 
+            <h2><i class="fas fa-edit"></i> تعديل فئات النقود يدوياً</h2>
+
+            <form id="denominations-edit-form">
+                <div id="denominations-list-edit" class="denominations-edit-grid">
+                    </div>
+                <button type="submit" class="button-green" style="width: 100%; margin-top: 20px;">
+                    <i class="fas fa-save"></i> حفظ التعديلات
+                </button>
+            </form>
+            <p class="detail-text" style="margin-top: 15px; color: #ffeb3b;">**ملاحظة:** المبلغ الإجمالي المحسوب يدوياً يجب أن يطابق الرصيد الكلي لتجنب التحذير.</p>
+        </div>
+    </div>
+    <div class="container">
+        <h1><i class="fas fa-chart-line"></i> لوحة تحكم الإدارة المالية</h1>
+        
+        <div class="summary-section card glass">
+            <h2><i class="fas fa-tachometer-alt"></i> ملخص الأداء</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <p class="label"><i class="fas fa-shekel-sign"></i> الرصيد الكلي (ILS)</p>
+                    <p class="value" id="current-balance-ils">0.00</p>
+                </div>
+                <div class="summary-item">
+                    <p class="label"><i class="fas fa-dollar-sign"></i> الرصيد الكلي (USD)</p>
+                    <p class="value" id="current-balance-usd">0.00</p>
+                </div>
+                <div class="summary-item">
+                    <p class="label"><i class="fas fa-bullseye"></i> نسبة التقدم للهدف</p>
+                    <p class="value" id="target-percentage">0%</p>
+                </div>
+            </div>
+            
+            <div class="progress-bar-container">
+                <p class="target-label">المبلغ المستهدف: <span id="target-amount-display">2100.00 ILS</span></p>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                </div>
+                <p class="remaining-info">**المتبقي للهدف**: <span id="remaining-amount">2100.00 ILS</span></p>
+            </div>
+
+            <div class="target-control">
+                <form id="change-target-form">
+                    <input type="number" id="new-target-amount" placeholder="تغيير المبلغ المستهدف (ILS)" required min="100" step="10">
+                    <button type="submit" class="button-purple"><i class="fas fa-crosshairs"></i> تغيير الهدف</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="flex-row">
+            <div class="input-section card glass">
+                <h2><i class="fas fa-plus-circle"></i> إيداع جديد</h2>
+                <form id="add-transaction-form">
+                    <input type="number" id="new-amount" placeholder="المبلغ بالشيكل" required min="0.01" step="0.01">
+                    <input type="text" id="transaction-note" placeholder="الملاحظة (مثلاً: مصروف / هدية)" required>
+                    <button type="submit" class="button-green"><i class="fas fa-piggy-bank"></i> إضافة</button>
+                    <button type="button" id="reset-data-button" class="button-red reset-btn"><i class="fas fa-trash-alt"></i> إعادة ضبط الكل</button>
+                </form>
+                <p id="target-message" class="hidden"></p>
+            </div>
+            
+            <div class="denominations-section card glass">
+                <h2><i class="fas fa-money-bill-wave"></i> الأوراق النقدية المتوفرة</h2>
+                <div id="denominations-display" class="denominations-grid">
+                    </div>
+                <button type="button" id="denominations-edit-button" class="button-yellow edit-btn">
+                    <i class="fas fa-edit"></i> تعديل يـدوي
+                </button>
+            </div>
+            
+            <div class="wishlist-form-section card glass">
+                <h2><i class="fas fa-gift"></i> إضافة أمنية</h2>
+                <form id="add-wish-form">
+                    <input type="text" id="wish-item-name" placeholder="اسم المنتج" required>
+                    <input type="number" id="wish-item-price" placeholder="السعر (ILS)" required min="1" step="0.01">
+                    <button type="submit" class="button-blue"><i class="fas fa-cart-plus"></i> إضافة منتج</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="transactions-section card glass">
+            <h2><i class="fas fa-list-ul"></i> سجل الإيداعات</h2>
+            <div class="table-container">
+                <table id="transactions-table">
+                    <thead>
+                        <tr>
+                            <th>التاريخ والوقت</th>
+                            <th>المبلغ (ILS)</th>
+                            <th>المبلغ (USD)</th>
+                            <th>الملاحظات</th>
+                            <th>إزالة</th> 
+                        </tr>
+                    </thead>
+                    <tbody id="transaction-list">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="wishlist-table-section card glass">
+            <h2><i class="fas fa-star"></i> قائمة المنتجات المرغوبة</h2>
+            <div class="table-container">
+                <table id="wishlist-table">
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>السعر (ILS)</th>
+                            <th>السعر (USD)</th>
+                            <th>الحالة</th>
+                            <th>إزالة</th> 
+                        </tr>
+                    </thead>
+                    <tbody id="wishlist-list">
+                    </tbody>
+                </table>
+            </div>
+            <p id="total-wishlist-summary" class="summary-message"></p> 
+        </div>
+
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
