@@ -4,10 +4,21 @@ let TARGET_AMOUNT_ILS = 2100;
 const INITIAL_BALANCE_ILS = 610;
 const WEEKLY_DEPOSIT_AMOUNT = 10; 
 
-// 🆕 بيانات وإعدادات الفئات النقدية 🆕
+// 💸 بيانات وإعدادات الفئات النقدية 💸
 const DENOMINATIONS = [200, 100, 50, 20, 10, 5, 1, 0.5]; // فئات الشيكل
 let cashDenominations = {}; // لتخزين عدد الأوراق: {200: 0, 100: 0, ...} 
 
+// 🆕 مصفوفة الأيقونات للأوراق النقدية (لواجهة متطورة) 🆕
+const DENOMINATION_ICONS = {
+    200: '<i class="fas fa-money-bill-wave" style="color:#00bcd4;"></i>', // أزرق/سماوي
+    100: '<i class="fas fa-money-bill-wave" style="color:#4CAF50;"></i>', // أخضر
+    50: '<i class="fas fa-money-bill-wave" style="color:#ff9800;"></i>', // برتقالي
+    20: '<i class="fas fa-money-bill-wave" style="color:#E91E63;"></i>', // وردي/أحمر
+    10: '<i class="fas fa-coins" style="color:#FFEB3B;"></i>', // ذهبي (عملة)
+    5: '<i class="fas fa-coins" style="color:#9C27B0;"></i>', // بنفسجي (عملة)
+    1: '<i class="fas fa-coins" style="color:#795548;"></i>', // بني (عملة)
+    0.5: '<i class="fas fa-coins" style="color:#607D8B;"></i>', // رمادي (نصف شيكل)
+};
 
 // عناصر الواجهة
 const balanceIlsEl = document.getElementById('current-balance-ils');
@@ -55,7 +66,7 @@ const profileWishlistNeededEl = document.getElementById('profile-wishlist-needed
 
 const closeBtns = document.querySelectorAll('.close-btn'); 
 
-// 🆕 عناصر واجهة المستخدم الجديدة للفئات 🆕
+// عناصر واجهة المستخدم الجديدة للفئات
 const denominationsDisplayEl = document.getElementById('denominations-display');
 const denominationsEditButton = document.getElementById('denominations-edit-button');
 const denominationsModal = document.getElementById('denominations-modal');
@@ -103,7 +114,7 @@ function sendDiscordNotification(type, data = {}) {
             description = `تم إضافة مبلغ **${data.amount.toFixed(2)} ILS** بنجاح. \n**الملاحظة:** ${data.note}`;
             color = 3066993; // أخضر
             
-            // 🆕 إضافة تفاصيل الفئات إلى الإشعار 🆕
+            // إضافة تفاصيل الفئات إلى الإشعار
             if (data.addedDenominations) {
                 const details = Object.entries(data.addedDenominations)
                     .filter(([d, c]) => c > 0)
@@ -169,7 +180,9 @@ function sendDiscordNotification(type, data = {}) {
     })
     .then(response => {
         if (!response.ok) {
-            console.error('Failed to send Discord notification. Status:', response.status);
+            console.error(`Failed to send Discord notification. Status: ${response.status} (Bad Request)`);
+            // رسالة إضافية لتوضيح المشكلة
+             console.error(`POST ${webhookUrl} net::ERR_ABORTED 400 (Bad Request)`);
         } else {
              console.log('Discord notification sent successfully.');
         }
@@ -234,11 +247,13 @@ function updateMusicButton(isPlaying, shouldPlayPause) {
         toggleMusicButton.className = 'button-red'; 
         
         if (shouldPlayPause) { 
+            // 🐛 حل مشكلة Autoplay blocked/File not found 
             musicElement.play().then(() => {
                 console.log("Music started playing successfully.");
             }).catch(error => {
                 console.error(`Error playing music (${error.name}):`, error);
                 
+                // إعادة الزر لوضع التشغيل في حالة الفشل
                 toggleMusicButton.innerHTML = 'تشغيل <i class="fas fa-play"></i>';
                 toggleMusicButton.className = 'button-green';
             });
@@ -277,7 +292,7 @@ function loadData() {
         wishlist = JSON.parse(storedWishlist);
     }
     
-    // 🆕 تحميل فئات النقود 🆕
+    // تحميل فئات النقود
     const storedDenominations = localStorage.getItem('cashDenominations');
     if (storedDenominations) {
         cashDenominations = JSON.parse(storedDenominations);
@@ -290,7 +305,7 @@ function loadData() {
 function saveData() {
     localStorage.setItem('moneyBoxTransactions', JSON.stringify(transactions));
     localStorage.setItem('moneyBoxWishlist', JSON.stringify(wishlist));
-    // 🆕 حفظ فئات النقود 🆕
+    // حفظ فئات النقود
     localStorage.setItem('cashDenominations', JSON.stringify(cashDenominations));
 }
 
@@ -302,7 +317,7 @@ function calculateTotalBalance() {
     return total;
 }
 
-// 🆕 دالة لإضافة المبلغ إلى فئات الأوراق النقدية 🆕
+// دالة لإضافة المبلغ إلى فئات الأوراق النقدية
 function addAmountToDenominations(amount) {
     const sortedDenominations = [...DENOMINATIONS].sort((a, b) => b - a);
 
@@ -319,6 +334,7 @@ function addAmountToDenominations(amount) {
     });
 
     if (remainingAmount > 0.01) {
+        // يتم تجاهل المبالغ الصغيرة جداً (أقل من أصغر فئة)
         console.warn(`تم ترك مبلغ بسيط لا يغطي أصغر فئة: ${remainingAmount.toFixed(2)} ILS`);
     }
 
@@ -327,7 +343,7 @@ function addAmountToDenominations(amount) {
     return addedCounts; // لإظهارها في الإشعار
 }
 
-// 🆕 دالة لمعرفة كم يتبقى من الأوراق 🆕
+// دالة لمعرفة كم يتبقى من الأوراق
 function calculateTotalDenominations() {
     let total = 0;
     for (const [denomination, count] of Object.entries(cashDenominations)) {
@@ -349,7 +365,7 @@ function deleteTransaction(id) {
         return; 
     }
     
-    // 🆕 حذف فئات النقود المقابلة للمعاملة المحذوفة 🆕
+    // حذف فئات النقود المقابلة للمعاملة المحذوفة 
     if (deletedTransaction.denominations) {
         for (const [denomination, count] of Object.entries(deletedTransaction.denominations)) {
             // نتأكد أننا لا نذهب تحت الصفر
@@ -399,7 +415,7 @@ function resetAllData() {
     localStorage.removeItem('moneyBoxTarget'); 
     localStorage.removeItem('moneyBoxWebhookUrl'); 
     localStorage.removeItem('goalReached');
-    localStorage.removeItem('cashDenominations'); // 🆕 حذف الفئات النقدية 🆕
+    localStorage.removeItem('cashDenominations'); // حذف الفئات النقدية 
 
     TARGET_AMOUNT_ILS = 2100; 
     transactions = [];
@@ -414,7 +430,7 @@ function resetAllData() {
 }
 
 function addAutomaticTransaction(amountIls, note) {
-    const addedDenominations = addAmountToDenominations(amountIls); // 🆕 إضافة الفئات 🆕
+    const addedDenominations = addAmountToDenominations(amountIls); // إضافة الفئات 
     
     const newTransaction = {
         id: Date.now(),
@@ -422,7 +438,7 @@ function addAutomaticTransaction(amountIls, note) {
         amountILS: amountIls,
         amountUSD: convertIlsToUsd(amountIls),
         note: note,
-        denominations: addedDenominations // 🆕 حفظ الفئات 🆕
+        denominations: addedDenominations // حفظ الفئات 
     };
 
     transactions.push(newTransaction);
@@ -525,7 +541,7 @@ function renderTransaction(transaction) {
     const row = transactionListEl.insertRow(0); // Add at the top
     let denominationDetails = '';
 
-    // 🆕 عرض تفاصيل فئات الإيداع 🆕
+    // عرض تفاصيل فئات الإيداع 
     if (transaction.denominations && Object.keys(transaction.denominations).length > 0) {
         const details = Object.entries(transaction.denominations)
             .filter(([d, c]) => c > 0)
@@ -559,7 +575,7 @@ function renderWishlist(currentBalance) {
         const remaining = item.priceILS - currentBalance;
         const canBuy = currentBalance >= item.priceILS;
         
-        const statusText = canBuy ? '✅ يمكن الشراء' : `⏳ متبقي: ${remaining.toFixed(2)} ILS`;
+        const statusText = canBuy ? '✅ يمكن الشراء' : `⏳ تحتاج: ${remaining.toFixed(2)} ILS`;
         const statusClass = canBuy ? 'status-can-buy' : 'status-saving';
 
         const row = wishlistListEl.insertRow();
@@ -576,17 +592,26 @@ function renderWishlist(currentBalance) {
 function updateWishlistSummary(currentBalance) {
     const totalCost = wishlist.reduce((sum, item) => sum + item.priceILS, 0);
     const affordableCount = wishlist.filter(item => currentBalance >= item.priceILS).length;
+    const itemsNeeded = wishlist.length - affordableCount;
     
     if (wishlist.length === 0) {
         totalWishlistSummaryEl.textContent = 'قائمة الأمنيات فارغة.';
         totalWishlistSummaryEl.style.backgroundColor = 'transparent';
         totalWishlistSummaryEl.style.color = '#fff';
     } else {
-        totalWishlistSummaryEl.textContent = `لديك ${wishlist.length} أمنيات بإجمالي تكلفة ${totalCost.toFixed(2)} ILS. يمكنك شراء ${affordableCount} منها الآن.`;
-        totalWishlistSummaryEl.style.backgroundColor = affordableCount > 0 ? 'rgba(76, 175, 80, 0.3)' : 'rgba(255, 235, 59, 0.2)';
-        totalWishlistSummaryEl.style.color = affordableCount > 0 ? '#4CAF50' : '#FFEB3B';
+        totalWishlistSummaryEl.textContent = `جميع الأمنيات باقي لك **${(totalCost - currentBalance).toFixed(2)} ILS** لشراء كل شيء (الإجمالي: ${totalCost.toFixed(2)} ILS)`;
+        
+        if (itemsNeeded === 0) {
+            totalWishlistSummaryEl.textContent = `🎉 لديك ما يكفي لشراء جميع الأمنيات! (الإجمالي: ${totalCost.toFixed(2)} ILS)`;
+            totalWishlistSummaryEl.style.backgroundColor = 'rgba(76, 175, 80, 0.3)';
+            totalWishlistSummaryEl.style.color = '#4CAF50';
+        } else {
+             totalWishlistSummaryEl.style.backgroundColor = 'rgba(255, 152, 0, 0.2)';
+             totalWishlistSummaryEl.style.color = '#FF9800';
+        }
     }
 }
+
 
 function updateProfileModal(currentBalance) {
     const totalIls = currentBalance;
@@ -605,7 +630,7 @@ function updateProfileModal(currentBalance) {
     profileWishlistNeededEl.textContent = itemsNeeded > 0 ? `متبقي لـ ${itemsNeeded} أمنيات.` : 'جاهز لشراء كل شيء!';
 }
 
-// 🆕 دالة عرض الفئات في لوحة التحكم 🆕
+// 💸 دالة عرض الفئات في لوحة التحكم (المحدثة بالرموز) 💸
 function renderDenominationsDisplay() {
     let html = '';
     const totalDenominations = calculateTotalDenominations();
@@ -613,7 +638,9 @@ function renderDenominationsDisplay() {
     // التنبيه إذا كان مجموع الأوراق لا يساوي الرصيد الكلي
     const currentTotalBalance = calculateTotalBalance();
     if (Math.abs(currentTotalBalance - totalDenominations) > 0.05) {
-        html += `<p style="color:var(--error-color); font-weight:bold; margin-bottom:10px;">⚠️ تحذير: مجموع الأوراق (${totalDenominations.toFixed(2)} ILS) لا يطابق الرصيد الكلي (${currentTotalBalance.toFixed(2)} ILS). يرجى الضبط.</p>`;
+        html += `<p style="color:var(--danger-color); font-weight:bold; margin-bottom:15px; background: rgba(244, 67, 54, 0.1); padding: 10px; border-radius: 6px;">
+                    ⚠️ تحذير: مجموع الأوراق (${totalDenominations.toFixed(2)} ILS) لا يطابق الرصيد الكلي (${currentTotalBalance.toFixed(2)} ILS). يرجى الضبط يدوياً.
+                </p>`;
     }
 
     // عرض الفئات (مرتبة من الأكبر للأصغر)
@@ -622,9 +649,10 @@ function renderDenominationsDisplay() {
         const count = cashDenominations[d] || 0;
         if (count > 0 || d >= 1) { // عرض حتى أصغر عملة ورقية/معدنية
             const type = d >= 10 ? 'ورقة' : 'قطعة';
+            const icon = DENOMINATION_ICONS[d] || '<i class="fas fa-coins"></i>';
             html += `
                 <div class="denomination-item">
-                    <span class="denom-value">${d.toFixed(d % 1 === 0 ? 0 : 2)} ILS</span>
+                    <span class="denom-value">${icon} ${d.toFixed(d % 1 === 0 ? 0 : 2)} ILS</span>
                     <span class="denom-count">X ${count} ${type}</span>
                     <span class="denom-total">= ${(d * count).toFixed(2)} ILS</span>
                 </div>
@@ -632,10 +660,10 @@ function renderDenominationsDisplay() {
         }
     });
 
-    denominationsDisplayEl.innerHTML = html || '<p class="detail-text">لا توجد نقود مسجلة بعد.</p>';
+    denominationsDisplayEl.innerHTML = html || '<p class="detail-text" style="color:#aaa;">لا توجد نقود مسجلة بعد.</p>';
 }
 
-// 🆕 دالة إنشاء محتوى نموذج تعديل الفئات 🆕
+// دالة إنشاء محتوى نموذج تعديل الفئات
 function renderDenominationsEditForm() {
     denominationsListEditEl.innerHTML = '';
     const sortedDenominations = [...DENOMINATIONS].sort((a, b) => b - a);
@@ -647,7 +675,7 @@ function renderDenominationsEditForm() {
         const div = document.createElement('div');
         div.className = 'denomination-edit-item';
         div.innerHTML = `
-            <label for="denom-input-${d}">${d.toFixed(d % 1 === 0 ? 0 : 2)} شيكل (${type}):</label>
+            <label for="denom-input-${d}"><i class="fas fa-money-bill-alt"></i> ${d.toFixed(d % 1 === 0 ? 0 : 2)} شيكل (${type}):</label>
             <input type="number" id="denom-input-${d}" value="${count}" min="0" step="1">
         `;
         denominationsListEditEl.appendChild(div);
@@ -667,13 +695,13 @@ profileButton.addEventListener('click', () => {
     profileModal.style.display = 'block';
 });
 
-// 🆕 معالج فتح نافذة تعديل الفئات 🆕
+// معالج فتح نافذة تعديل الفئات 
 denominationsEditButton.addEventListener('click', () => {
     renderDenominationsEditForm();
     denominationsModal.style.display = 'block';
 });
 
-// 🆕 معالج حفظ تعديلات الفئات 🆕
+// معالج حفظ تعديلات الفئات 
 denominationsEditForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
@@ -689,7 +717,7 @@ denominationsEditForm.addEventListener('submit', (e) => {
     // تحديث الرصيد الكلي بناءً على الأوراق الجديدة (هذا سيظهر التحذير إذا لم تتطابق الأرقام مع الرصيد الحقيقي)
     updateBalanceDisplay(); 
     denominationsModal.style.display = 'none';
-    alert('تم حفظ تعديلات فئات النقود بنجاح.');
+    alert('تم حفظ تعديلات فئات النقود بنجاح. قد تحتاج لإعادة تعيين الرصيد الكلي إذا كان التحذير مستمراً.');
 });
 
 
@@ -709,7 +737,7 @@ window.addEventListener('click', (e) => {
     if (e.target === profileModal) {
         profileModal.style.display = 'none';
     }
-    if (e.target === denominationsModal) { // 🆕 إغلاق نافذة الفئات 🆕
+    if (e.target === denominationsModal) { // إغلاق نافذة الفئات 
         denominationsModal.style.display = 'none';
     }
 });
@@ -725,7 +753,7 @@ addTransactionForm.addEventListener('submit', (e) => {
         return;
     }
     
-    // 🆕 استدعاء دالة إضافة الفئات 🆕
+    // استدعاء دالة إضافة الفئات 
     const addedDenominations = addAmountToDenominations(amountIls); 
 
     const newTransaction = {
@@ -734,7 +762,7 @@ addTransactionForm.addEventListener('submit', (e) => {
         amountILS: amountIls,
         amountUSD: convertIlsToUsd(amountIls),
         note: noteText,
-        denominations: addedDenominations // 🆕 حفظ الفئات التي تم إيداعها 🆕
+        denominations: addedDenominations // حفظ الفئات التي تم إيداعها 
     };
 
     transactions.push(newTransaction);
@@ -798,14 +826,42 @@ changeTargetForm.addEventListener('submit', (e) => {
 
 resetDataButton.addEventListener('click', resetAllData);
 
+// 🛠️ معالج زر تشغيل الموسيقى
+toggleMusicButton.addEventListener('click', () => {
+    const isPlaying = !musicElement.paused;
+    updateMusicButton(!isPlaying, true);
+});
+
+// 🛠️ معالج شريط التحكم بالصوت
+volumeSlider.addEventListener('input', (e) => {
+    const newVolume = parseFloat(e.target.value);
+    musicElement.volume = newVolume;
+    localStorage.setItem('moneyBoxVolume', newVolume);
+    volumeValueEl.textContent = `${Math.round(newVolume * 100)}%`;
+});
+
+// 🛠️ معالج حفظ رابط الـ Webhook
+saveWebhookButton.addEventListener('click', () => {
+    const newWebhookUrl = webhookUrlInput.value.trim();
+    webhookUrl = newWebhookUrl;
+    localStorage.setItem('moneyBoxWebhookUrl', newWebhookUrl);
+    alert('تم حفظ رابط الـ Webhook بنجاح.');
+});
+
+// 🛠️ معالج تغيير الثيم
+bgColorSelect.addEventListener('change', (e) => {
+    applyColorTheme(e.target.value);
+});
+
 
 function init() {
     loadData();
     renderTransactions();
     updateBalanceDisplay();
     checkDailyDeposit(); 
-    // 🆕 تشغيل دالة عرض الفئات عند بدء التشغيل 🆕
+    // تشغيل دالة عرض الفئات عند بدء التشغيل 
     renderDenominationsDisplay(); 
 }
+
 
 init();
