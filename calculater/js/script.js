@@ -1,6 +1,6 @@
 // بيانات المشروع
 const ILS_TO_USD_RATE = 0.273;
-let TARGET_AMOUNT_ILS = 0; 
+let TARGET_AMOUNT_ILS = 2100; 
 const INITIAL_BALANCE_ILS = 0;
 const WEEKLY_DEPOSIT_AMOUNT = 10; 
 
@@ -865,4 +865,5 @@ function init() {
 
 
 init();
+
 
