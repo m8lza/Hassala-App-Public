@@ -1,41 +1,48 @@
 /* ==================================== */
-/* تنسيقات عامة وتأثير الزجاج (Glassmorphism) */
+/* 0. الخطوط والإعدادات العامة */
 /* ==================================== */
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;400;700&display=swap');
 
-/* ⬅️ متغيرات الألوان للثيمات ⬅️ */
+/* ⬅️ متغيرات الألوان للثيمات (مطابقة لطلبك) ⬅️ */
 :root {
     --bg-color-main: #1f014e; 
     --bg-color-secondary: #000000;
     --text-color: #f0f0f0;
-    --highlight-color: #81D4FA; 
-    --success-color: #4CAF50;
-    --danger-color: #f44336;
+    --highlight-color: #81D4FA; /* سماوي فاتح */
+    --success-color: #4CAF50; /* أخضر */
+    --danger-color: #f44336; /* أحمر */
     --primary-color: #00bcd4; /* أزرق سماوي */
     --profile-color: #3f51b5; /* أزرق داكن للبروفايل */
+    --warning-color: #FFEB3B; /* أصفر للتنبيهات */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
     font-family: 'Cairo', sans-serif; 
+    /* 🎨 تطبيق التدرج اللوني الذي طلبته */
     background: linear-gradient(135deg, var(--bg-color-main) 0%, var(--bg-color-secondary) 100%); 
     color: var(--text-color);
-    margin: 0;
-    padding: 0;
     direction: rtl; 
     text-align: right;
     min-height: 100vh;
     transition: background 0.5s ease; 
+    padding-bottom: 50px;
 }
 /* ⬅️ فئات الألوان للثيمات ⬅️ */
-.theme-blue {
+body.theme-blue {
     --bg-color-main: #0d1e3d;
     --bg-color-secondary: #1c3660;
 }
-.theme-red {
+body.theme-red {
     --bg-color-main: #3d0d0d;
     --bg-color-secondary: #601c1c;
 }
-.theme-green {
+body.theme-green {
     --bg-color-main: #0d3d1c;
     --bg-color-secondary: #1c602d;
 }
@@ -43,7 +50,7 @@ body {
 
 .container {
     max-width: 1200px; 
-    margin: 40px auto;
+    margin: 0 auto;
     padding: 20px;
     padding-top: 80px; /* **مهم:** مسافة لأسفل الأزرار الثابتة */
 }
@@ -55,9 +62,12 @@ h1 {
     font-size: 2.5em;
     font-weight: 700;
 }
-h1 i { color: #FFEB3B; margin-left: 10px; }
+h1 i { color: var(--warning-color); margin-left: 10px; }
 
-/* تأثير الزجاج (Glass Effect) */
+
+/* ==================================== */
+/* 1. تأثير الزجاج (Glassmorphism) */
+/* ==================================== */
 .glass {
     background: rgba(255, 255, 255, 0.05); 
     border-radius: 16px;
@@ -74,13 +84,13 @@ h1 i { color: #FFEB3B; margin-left: 10px; }
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
 }
 
 h2 {
-    color: #ffffff;
-    border-bottom: 2px solid #555;
+    color: var(--text-color);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     padding-bottom: 12px;
     margin-top: 0;
     font-size: 1.6em;
@@ -89,12 +99,12 @@ h2 {
 h2 i { margin-left: 8px; color: var(--success-color); }
 
 /* ==================================== */
-/* ⬅️ تنسيقات زر الإعدادات والبروفايل (FIXED - لضمان الثبات) ⬅️ */
+/* 2. الأزرار الثابتة (Settings & Profile) */
 /* ==================================== */
 .settings-btn, .profile-btn {
-    position: fixed; /* **مهم جدًا:** للحفاظ عليها ثابتة أثناء التمرير */
+    position: fixed; 
     top: 20px;
-    z-index: 9999; /* **مهم جدًا:** لضمان بقائها فوق جميع محتويات الصفحة */
+    z-index: 9999; 
     width: 50px;
     height: 50px;
     border: none;
@@ -115,7 +125,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
 }
 
 .profile-btn {
-    right: 80px; /* 20px (margin) + 50px (settings-btn width) + 10px (gap) */
+    right: 80px; 
     background-color: var(--profile-color); 
     font-size: 1.8em;
     box-shadow: 0 4px 15px rgba(63, 81, 181, 0.5);
@@ -131,7 +141,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
 
 
 /* ==================================== */
-/* ⬅️ تنسيقات الواجهة المنبثقة (Modal) ⬅️ */
+/* 3. تنسيقات الواجهة المنبثقة (Modal) */
 /* ==================================== */
 .modal {
     display: none; 
@@ -169,7 +179,15 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     font-weight: bold;
     cursor: pointer;
     transition: color 0.3s;
+    position: absolute;
+    top: 15px;
+    left: 20px;
 }
+
+.close-btn:hover {
+    color: #ff7979;
+}
+
 
 /* 🛠️ تنسيقات قائمة الإعدادات */
 .settings-section {
@@ -187,7 +205,28 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     padding: 10px 0;
     border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
 }
-
+.setting-item:last-child {
+    border-bottom: none;
+}
+.setting-item label {
+    font-size: 1.1em;
+    font-weight: 400;
+    white-space: nowrap; 
+    flex-shrink: 0; 
+}
+.setting-item i {
+    margin-left: 5px;
+    color: var(--primary-color);
+}
+/* تنسيق حقل الـ Webhook */
+#webhook-url-input {
+    flex-grow: 1; 
+    min-width: 150px; 
+}
+.setting-item:nth-last-child(1) { /* تحديد آخر عنصر (زر الحفظ) */
+    justify-content: flex-end; 
+    border-bottom: none;
+}
 /* 🆕 تنسيقات شريط التحكم بالصوت */
 .volume-control {
     display: flex;
@@ -221,47 +260,17 @@ h2 i { margin-left: 8px; color: var(--success-color); }
 }
 /* ------------------------------- */
 
-.setting-item:last-child {
-    border-bottom: none;
-}
-
-.setting-item label {
-    font-size: 1.1em;
-    font-weight: 400;
-    white-space: nowrap; 
-    flex-shrink: 0; 
-}
-
-/* تنسيق حقل الـ Webhook */
-#webhook-url-input {
-    flex-grow: 1; 
-    min-width: 150px; 
-}
-
-/* تنسيق زر الحفظ ليظهر بشكل منفصل ومرتب */
-.setting-item:nth-last-child(1) { /* تحديد آخر عنصر (زر الحفظ) */
-    justify-content: flex-end; 
-    border-bottom: none;
-}
-.setting-item:nth-last-child(1) button { 
-    width: auto;
-}
-/* ------------------------------- */
-
-/* 🆕 تنسيقات واجهة البروفايل (Profile Modal) */
-
+/* 👤 تنسيقات واجهة البروفايل (Profile Modal) */
 .profile-header {
     text-align: center;
     padding-bottom: 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 .profile-icon {
     font-size: 4em;
     color: var(--highlight-color);
     margin-bottom: 10px;
 }
-
 .profile-header h2 {
     border-bottom: none;
     font-size: 1.5em;
@@ -272,14 +281,12 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     color: #bbb;
     font-size: 0.9em;
 }
-
 .profile-summary {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     padding-top: 20px;
 }
-
 .balance-card {
     grid-column: 1 / -1; 
     background: rgba(0, 0, 0, 0.2);
@@ -303,7 +310,6 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     font-size: 1.2em;
     color: var(--highlight-color);
 }
-
 .target-info, .progress-info, .wishlist-summary-profile {
     padding: 15px;
     background: rgba(0, 0, 0, 0.15);
@@ -311,14 +317,12 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     text-align: center;
 }
 .target-info h3, .progress-info h3, .wishlist-summary-profile h3 {
-    color: #FFEB3B;
+    color: var(--warning-color);
     margin-top: 0;
     font-size: 1.1em;
     border-bottom: 1px dotted #444;
     padding-bottom: 5px;
 }
-
-/* تنسيق شريط التقدم في البروفايل */
 .profile-progress-bar-bg {
     height: 10px;
     background-color: #333;
@@ -326,7 +330,6 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     overflow: hidden;
     margin: 8px 0;
 }
-
 #profile-progress-bar-fill {
     height: 100%;
     width: 0%; 
@@ -339,8 +342,9 @@ h2 i { margin-left: 8px; color: var(--success-color); }
 }
 /* ------------------------------- */
 
+
 /* ==================================== */
-/* لوحة ملخص الأداء (Summary Dashboard) */
+/* 4. لوحة ملخص الأداء (Summary Dashboard) */
 /* ==================================== */
 
 .summary-grid {
@@ -355,7 +359,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     background: rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     text-align: center;
-    border-top: 3px solid #00bcd4;
+    border-top: 3px solid var(--primary-color);
 }
 
 .summary-item .label {
@@ -368,7 +372,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
 .summary-item .value {
     font-size: 2em;
     font-weight: 700;
-    color: #4CAF50; 
+    color: var(--success-color); 
 }
 
 /* شريط التقدم */
@@ -390,7 +394,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
 #progress-bar-fill {
     height: 100%;
     width: 0%; 
-    background: linear-gradient(to right, #00bcd4, #4CAF50);
+    background: linear-gradient(to right, var(--primary-color), var(--success-color));
     transition: width 1s ease-out; 
 }
 
@@ -401,7 +405,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
 
 .remaining-info span {
     font-weight: bold;
-    color: #FFEB3B;
+    color: var(--warning-color);
 }
 
 /* تنسيق قسم تغيير الهدف */
@@ -419,16 +423,16 @@ h2 i { margin-left: 8px; color: var(--success-color); }
 }
 
 /* ==================================== */
-/* نماذج الإدخال والأزرار والتصنيف */
+/* 5. نماذج الإدخال والأزرار والتصنيف */
 /* ==================================== */
 .flex-row {
     display: flex;
     gap: 25px;
 }
 
-.input-section, .wishlist-form-section {
+.input-section, .wishlist-form-section, .denominations-section {
     flex: 1; 
-    min-width: 45%;
+    min-width: 300px;
 }
 
 #add-transaction-form, #add-wish-form {
@@ -453,7 +457,7 @@ input::placeholder {
 }
 
 input:focus, select:focus {
-    border-color: #81D4FA;
+    border-color: var(--highlight-color);
     box-shadow: 0 0 8px rgba(129, 212, 250, 0.7);
     outline: none;
 }
@@ -470,10 +474,11 @@ button {
     flex-shrink: 0; 
 }
 
-.button-green { background-color: #4CAF50; }
-.button-blue { background-color: #00bcd4; }
-.button-red { background-color: #f44336; } 
+.button-green { background-color: var(--success-color); }
+.button-blue { background-color: var(--primary-color); }
+.button-red { background-color: var(--danger-color); } 
 .button-purple { background-color: #9c27b0; } 
+.button-yellow { background-color: #FF9800; color: #121212; }
 
 button:hover {
     opacity: 0.9;
@@ -484,7 +489,7 @@ button:hover {
     background: none;
     border: none;
     cursor: pointer;
-    color: #f44336;
+    color: var(--danger-color);
     font-size: 1.2em;
     transition: color 0.2s, transform 0.1s;
     padding: 0;
@@ -511,7 +516,102 @@ button:hover {
 }
 
 /* ==================================== */
-/* تنسيقات الجداول */
+/* 6. تنسيقات فئات النقود (Denominations) */
+/* ==================================== */
+
+.denominations-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.denomination-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.08); /* خلفية خفيفة */
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 400;
+    border-left: 4px solid var(--primary-color); /* شريط جانبي */
+}
+
+.denom-value {
+    font-weight: bold;
+    color: var(--highlight-color);
+    flex-basis: 35%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.denom-value i {
+    font-size: 1.3em;
+}
+
+.denom-count {
+    color: var(--text-color);
+    flex-basis: 30%;
+    text-align: center;
+}
+
+.denom-total {
+    font-weight: 700;
+    color: var(--success-color);
+    flex-basis: 35%;
+    text-align: left;
+}
+.edit-btn {
+    width: 100%;
+}
+
+/* تنسيق نافذة التعديل المنبثقة للفئات */
+.denominations-edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.denomination-edit-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+}
+
+.denomination-edit-item label {
+    font-weight: 400;
+    color: var(--highlight-color);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.denomination-edit-item label i {
+    color: var(--warning-color);
+}
+
+.denomination-edit-item input[type="number"] {
+    padding: 8px;
+    border: 1px solid #555;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: var(--text-color);
+    text-align: center;
+}
+
+.details-note {
+    font-size: 0.9em;
+    color: #aaa;
+    display: block;
+    margin-top: 5px;
+}
+
+/* ==================================== */
+/* 7. تنسيقات الجداول */
 /* ==================================== */
 .table-container {
     max-height: 400px; 
@@ -530,7 +630,7 @@ button:hover {
 #transactions-table th, #wishlist-table th {
     background-color: rgba(0, 0, 0, 0.4);
     padding: 15px;
-    color: #81D4FA;
+    color: var(--highlight-color);
     font-weight: 700;
     position: sticky;
     top: 0;
@@ -544,16 +644,16 @@ button:hover {
     vertical-align: middle;
 }
 
-#transactions-table tr:hover td {
+#transactions-table tr:hover td, #wishlist-table tr:hover td {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
 .status-can-buy {
-    color: #4CAF50;
+    color: var(--success-color);
     font-weight: bold;
 }
 .status-saving {
-    color: #FFEB3B;
+    color: var(--warning-color);
 }
 
 .summary-message {
@@ -562,16 +662,18 @@ button:hover {
     border-radius: 8px;
     font-weight: bold;
     text-align: center;
+    /* تنسيق خاص لرسالة خلاصة الأمنيات */
+    border: 1px solid;
 }
 
 /* ==================================== */
-/* التجاوبية (Responsive Design) */
+/* 8. التجاوبية (Responsive Design) */
 /* ==================================== */
 @media (max-width: 992px) {
     .flex-row {
         flex-direction: column;
     }
-    .input-section, .wishlist-form-section {
+    .input-section, .wishlist-form-section, .denominations-section {
         min-width: 100%;
     }
 }
@@ -597,6 +699,7 @@ button:hover {
         margin: 20% auto;
     }
     
+    /* تعديل موقع أزرار FIXED في الموبايل */
     .settings-btn {
         width: 40px;
         height: 40px;
@@ -604,8 +707,6 @@ button:hover {
         top: 10px;
         right: 10px;
     }
-    
-    /* تعديل موقع زر البروفايل في الموبايل */
     .profile-btn {
         top: 10px;
         right: 60px; 
@@ -616,44 +717,45 @@ button:hover {
     
     /* إخفاء عمود الدولار في الجدول على شاشات الموبايل */
     #transactions-table th:nth-child(3), 
-    #transactions-table td:nth-child(3) {
+    #transactions-table td:nth-child(3),
+    #wishlist-table th:nth-child(3),
+    #wishlist-table td:nth-child(3) {
         display: none;
     }
     
-    /* 🛠️ تعديل تنسيق الإعدادات في الموبايل لفك التداخل 🛠️ */
+    /* تعديل تنسيق الإعدادات في الموبايل */
     .setting-item {
         flex-direction: column;
         align-items: flex-start; 
         gap: 8px;
     }
-    
-    .setting-item label, 
-    .setting-item select, 
-    .setting-item button, 
-    .setting-item input {
+    .setting-item label, .setting-item select, .setting-item button, .setting-item input {
         width: 100%;
         text-align: right;
         margin: 0;
     }
-    
-    .setting-item:nth-last-child(1) { /* زر الحفظ */
+    .setting-item:nth-last-child(1) { 
         justify-content: flex-end; 
         flex-direction: row; 
     }
     
-    /* 🛠️ تعديل تنسيق شريط التحكم بالصوت في الموبايل 🛠️ */
-    .volume-control {
-        flex-direction: row; /* إبقاء الشريط أفقياً */
-        justify-content: space-between;
-        align-items: center;
+    /* تعديل عرض فئات النقود في الموبايل */
+    .denomination-item {
+        font-size: 1em;
+        padding: 8px 10px;
     }
-    .volume-control label {
-        width: auto;
-        text-align: right;
+    .denom-value {
+        flex-basis: 40%;
     }
-    #volume-slider {
-        flex-grow: 1;
-        margin-right: 10px;
+    .denom-count {
+        flex-basis: 20%;
+    }
+    .denom-total {
+        flex-basis: 40%;
     }
     
+    .denominations-edit-grid {
+        grid-template-columns: 1fr;
+    }
 }
+
