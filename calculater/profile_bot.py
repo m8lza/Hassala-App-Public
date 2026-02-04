@@ -4,20 +4,13 @@ import requests
 import json
 from datetime import datetime
 
-# ==========================================================
-# 🚨 1. الإعدادات الهامة (يجب تغييرها) 🚨
-# ==========================================================
 
-# 1.1. رمز البوت السري (Bot Token) من Discord Developer Portal
-# تأكد من أنه Bot Token وليس رابط Webhook.
 BOT_TOKEN = 'MTQ0NDQ3MDE1MTk0Nzg3ODcxNQ.GKrPT4.aiPa9bfkrOQykvn1pGOIwrxj430IXkuANRzjFA' 
 
-# 1.2. رابط الـ Webhook الذي تريد أن يرسل إليه البوت بيانات البروفايل
 PROFILE_WEBHOOK_URL = 'https://discord.com/api/webhooks/1442970383421669498/sGD9SkQdccksMR63l6-8sTRAu-SREk50Eyrr4nTfxJt2dctzPeQ0wvE0c6EJewr7WPHm' 
 
-# ==========================================================
-# 2. منطق البوت
-# ==========================================================
+
+
 
 intents = discord.Intents.default()
 intents.message_content = True 
@@ -28,17 +21,15 @@ async def on_ready():
     print(f'✅ البوت {bot.user.name} جاهز للعمل!')
     print('يمكنك الآن كتابة "profile" في أي قناة ليبدأ العمل.')
 
-# ⚠️ دالة جلب البيانات (يجب تحديثها يدوياً)
 def get_profile_data():
-    # يجب عليك تعديل هذه القيم لتناسب آخر رصيد في موقع الحصالة
     return {
-        "currentBalanceILS": 610.00,  # مثال: الرصيد الحالي
+        "currentBalanceILS": 610.00,  
         "targetILS": 2100.00,
         "wishlistCount": 1, 
-        "computerCost": 4100.00 # مثال: تكلفة أغلى أمنية
+        "computerCost": 4100.00
     }
 
-# دالة إرسال الـ Webhook
+    
 def send_profile_webhook():
     data = get_profile_data()
     
@@ -80,7 +71,7 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    # التحقق من كلمة "profile"
+    
     if message.content.lower().strip() == 'profile': 
         
         success = send_profile_webhook()
@@ -96,4 +87,5 @@ if __name__ == "__main__":
     try:
         bot.run(BOT_TOKEN)
     except Exception as e:
+
         print(f"حدث خطأ أثناء تشغيل البوت: {e}")
