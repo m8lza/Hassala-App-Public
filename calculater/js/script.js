@@ -1,26 +1,25 @@
-// بيانات المشروع
+ 
 const ILS_TO_USD_RATE = 0.273;
 let TARGET_AMOUNT_ILS = 2100; 
 const INITIAL_BALANCE_ILS = 0;
 const WEEKLY_DEPOSIT_AMOUNT = 10; 
 
-// 💸 بيانات وإعدادات الفئات النقدية 💸
-const DENOMINATIONS = [200, 100, 50, 20, 10, 5, 1, 0.5]; // فئات الشيكل
-let cashDenominations = {}; // لتخزين عدد الأوراق: {200: 0, 100: 0, ...} 
 
-// 🆕 مصفوفة الأيقونات للأوراق النقدية (لواجهة متطورة) 🆕
+const DENOMINATIONS = [200, 100, 50, 20, 10, 5, 1, 0.5];  
+let cashDenominations = {};  
+
 const DENOMINATION_ICONS = {
-    200: '<i class="fas fa-money-bill-wave" style="color:#00bcd4;"></i>', // أزرق/سماوي
-    100: '<i class="fas fa-money-bill-wave" style="color:#4CAF50;"></i>', // أخضر
-    50: '<i class="fas fa-money-bill-wave" style="color:#ff9800;"></i>', // برتقالي
-    20: '<i class="fas fa-money-bill-wave" style="color:#E91E63;"></i>', // وردي/أحمر
-    10: '<i class="fas fa-coins" style="color:#FFEB3B;"></i>', // ذهبي (عملة)
-    5: '<i class="fas fa-coins" style="color:#9C27B0;"></i>', // بنفسجي (عملة)
-    1: '<i class="fas fa-coins" style="color:#795548;"></i>', // بني (عملة)
-    0.5: '<i class="fas fa-coins" style="color:#607D8B;"></i>', // رمادي (نصف شيكل)
+    200: '<i class="fas fa-money-bill-wave" style="color:#00bcd4;"></i>', 
+    100: '<i class="fas fa-money-bill-wave" style="color:#4CAF50;"></i>', 
+    50: '<i class="fas fa-money-bill-wave" style="color:#ff9800;"></i>', 
+    20: '<i class="fas fa-money-bill-wave" style="color:#E91E63;"></i>', 
+    10: '<i class="fas fa-coins" style="color:#FFEB3B;"></i>', 
+    5: '<i class="fas fa-coins" style="color:#9C27B0;"></i>', 
+    1: '<i class="fas fa-coins" style="color:#795548;"></i>', 
+    0.5: '<i class="fas fa-coins" style="color:#607D8B;"></i>',
 };
 
-// عناصر الواجهة
+
 const balanceIlsEl = document.getElementById('current-balance-ils');
 const balanceUsdEl = document.getElementById('current-balance-usd');
 const targetAmountDisplayEl = document.getElementById('target-amount-display');
@@ -41,7 +40,7 @@ const totalWishlistSummaryEl = document.getElementById('total-wishlist-summary')
 const changeTargetForm = document.getElementById('change-target-form');
 const newTargetAmountInput = document.getElementById('new-target-amount');
 
-// عناصر الإعدادات والـ Modal
+ 
 const settingsButton = document.getElementById('settings-button');
 const settingsModal = document.getElementById('settings-modal');
 const musicElement = document.getElementById('background-music');
@@ -49,11 +48,11 @@ const toggleMusicButton = document.getElementById('toggle-music-button');
 const bgColorSelect = document.getElementById('bg-color-select');
 const webhookUrlInput = document.getElementById('webhook-url-input');
 const saveWebhookButton = document.getElementById('save-webhook-button');
-// عناصر مستوى الصوت
+ 
 const volumeSlider = document.getElementById('volume-slider');
 const volumeValueEl = document.getElementById('volume-value');
 
-// عناصر البروفايل 
+ 
 const profileButton = document.getElementById('profile-button');
 const profileModal = document.getElementById('profile-modal');
 const profileBalanceIlsEl = document.getElementById('profile-balance-ils');
@@ -66,7 +65,7 @@ const profileWishlistNeededEl = document.getElementById('profile-wishlist-needed
 
 const closeBtns = document.querySelectorAll('.close-btn'); 
 
-// عناصر واجهة المستخدم الجديدة للفئات
+
 const denominationsDisplayEl = document.getElementById('denominations-display');
 const denominationsEditButton = document.getElementById('denominations-edit-button');
 const denominationsModal = document.getElementById('denominations-modal');
@@ -77,13 +76,9 @@ let transactions = [];
 let wishlist = [];
 let webhookUrl = '';
 
-// ==========================================================
-// وظائف الإشعارات (Discord Webhook) 
-// ==========================================================
-/**
- * @param {string} type نوع الإشعار: 'ADD', 'DELETE_TRANS', 'DELETE_WISH', 'GOAL_REACHED', 'DAILY_CHECK', 'TARGET_CHANGED', 'ADD_WISH'
- * @param {object} data بيانات الإشعار
- */
+
+
+
 function sendDiscordNotification(type, data = {}) {
     if (!webhookUrl) {
         console.warn('Webhook URL غير موجود. لن يتم إرسال الإشعار.');
@@ -92,7 +87,7 @@ function sendDiscordNotification(type, data = {}) {
     
     let title = '';
     let description = '';
-    let color = 5793266; // أزرق افتراضي
+    let color = 5793266; 
 
     const currentTotal = calculateTotalBalance();
     
@@ -107,14 +102,14 @@ function sendDiscordNotification(type, data = {}) {
         timestamp: new Date().toISOString()
     };
 
-    // بناء هيكل الإشعار حسب النوع
+       
     switch (type) {
         case 'ADD':
             title = `💰 إيداع جديد في الحصالة!`;
             description = `تم إضافة مبلغ **${data.amount.toFixed(2)} ILS** بنجاح. \n**الملاحظة:** ${data.note}`;
-            color = 3066993; // أخضر
+            color = 3066993;  
             
-            // إضافة تفاصيل الفئات إلى الإشعار
+            
             if (data.addedDenominations) {
                 const details = Object.entries(data.addedDenominations)
                     .filter(([d, c]) => c > 0)
@@ -127,37 +122,37 @@ function sendDiscordNotification(type, data = {}) {
         case 'DELETE_TRANS':
             title = `🗑️ سحب مالي (حذف معاملة)`;
             description = `تم سحب/حذف معاملة بقيمة **${data.amount.toFixed(2)} ILS**. \n**سبب السحب:** **${data.deleteNote}**`;
-            color = 15158332; // أحمر
+            color = 15158332;  
             break;
 
         case 'DELETE_WISH':
             title = `❌ حذف أمنية`;
             description = `تم حذف الأمنية **${data.name}** التي كانت تكلفتها **${data.price.toFixed(2)} ILS**.`;
-            color = 10038562; // بنفسجي
+            color = 10038562;  
             break;
 
         case 'GOAL_REACHED':
             title = `🎯 هدف جديد تحقق!`;
             description = `🎉 مبروك! لقد تجاوزت الهدف بنجاح.`;
-            color = 16776960; // ذهبي
+            color = 16776960;  
             break;
             
         case 'DAILY_CHECK':
             title = `⏰ تذكير المصروف اليومي`;
             description = `هل أخذت مصروفك اليوم (${data.amount.toFixed(2)} ILS)؟ يرجى تسجيله في الموقع.`;
-            color = 15844367; // أصفر
+            color = 15844367;  
             break;
 
         case 'TARGET_CHANGED':
             title = `🎯 تحديث الهدف المالي`;
             description = `تم تغيير الهدف المالي من **${data.oldTarget.toFixed(2)} ILS** إلى **${data.newTarget.toFixed(2)} ILS**!`;
-            color = 16751271; // برتقالي
+            color = 16751271;  
             break;
             
         case 'ADD_WISH':
             title = `🎁 أمنية جديدة في القائمة`;
             description = `تم إضافة المنتج: **${data.name}** بتكلفة **${data.price.toFixed(2)} ILS**.`;
-            color = 2277106; // سماوي
+            color = 2277106;  
             break;
 
 
@@ -181,7 +176,7 @@ function sendDiscordNotification(type, data = {}) {
     .then(response => {
         if (!response.ok) {
             console.error(`Failed to send Discord notification. Status: ${response.status} (Bad Request)`);
-            // رسالة إضافية لتوضيح المشكلة
+               
              console.error(`POST ${webhookUrl} net::ERR_ABORTED 400 (Bad Request)`);
         } else {
              console.log('Discord notification sent successfully.');
@@ -193,9 +188,7 @@ function sendDiscordNotification(type, data = {}) {
 }
 
 
-// ==========================================================
-// وظائف عامة (Helper Functions)
-// ==========================================================
+
 
 function convertIlsToUsd(ils) {
     return ils * ILS_TO_USD_RATE;
@@ -221,7 +214,7 @@ function loadSettings() {
     const storedMusicState = localStorage.getItem('moneyBoxMusicPlaying') === 'true'; 
     updateMusicButton(storedMusicState, false); 
     
-    // تحميل مستوى الصوت
+    
     const storedVolume = localStorage.getItem('moneyBoxVolume') || '0.5';
     musicElement.volume = parseFloat(storedVolume);
     volumeSlider.value = storedVolume;
@@ -247,13 +240,12 @@ function updateMusicButton(isPlaying, shouldPlayPause) {
         toggleMusicButton.className = 'button-red'; 
         
         if (shouldPlayPause) { 
-            // 🐛 حل مشكلة Autoplay blocked/File not found 
             musicElement.play().then(() => {
                 console.log("Music started playing successfully.");
             }).catch(error => {
                 console.error(`Error playing music (${error.name}):`, error);
                 
-                // إعادة الزر لوضع التشغيل في حالة الفشل
+                   
                 toggleMusicButton.innerHTML = 'تشغيل <i class="fas fa-play"></i>';
                 toggleMusicButton.className = 'button-green';
             });
@@ -278,7 +270,6 @@ function loadData() {
     if (storedTransactions) {
         transactions = JSON.parse(storedTransactions);
     } else {
-        // إضافة الرصيد الأولي عند عدم وجود بيانات
         transactions.push({
             id: Date.now(),
             date: new Date().toLocaleTimeString('ar-EG') + ' ' + new Date().toLocaleDateString('ar-EG'),
@@ -292,12 +283,12 @@ function loadData() {
         wishlist = JSON.parse(storedWishlist);
     }
     
-    // تحميل فئات النقود
+       
     const storedDenominations = localStorage.getItem('cashDenominations');
     if (storedDenominations) {
         cashDenominations = JSON.parse(storedDenominations);
     } else {
-        // تهيئة الفئات إلى صفر في أول مرة
+             
         DENOMINATIONS.forEach(d => cashDenominations[d] = 0);
     }
 }
@@ -305,7 +296,7 @@ function loadData() {
 function saveData() {
     localStorage.setItem('moneyBoxTransactions', JSON.stringify(transactions));
     localStorage.setItem('moneyBoxWishlist', JSON.stringify(wishlist));
-    // حفظ فئات النقود
+    
     localStorage.setItem('cashDenominations', JSON.stringify(cashDenominations));
 }
 
@@ -317,7 +308,7 @@ function calculateTotalBalance() {
     return total;
 }
 
-// دالة لإضافة المبلغ إلى فئات الأوراق النقدية
+    
 function addAmountToDenominations(amount) {
     const sortedDenominations = [...DENOMINATIONS].sort((a, b) => b - a);
 
@@ -334,16 +325,15 @@ function addAmountToDenominations(amount) {
     });
 
     if (remainingAmount > 0.01) {
-        // يتم تجاهل المبالغ الصغيرة جداً (أقل من أصغر فئة)
         console.warn(`تم ترك مبلغ بسيط لا يغطي أصغر فئة: ${remainingAmount.toFixed(2)} ILS`);
     }
 
     saveData();
     renderDenominationsDisplay();
-    return addedCounts; // لإظهارها في الإشعار
+    return addedCounts;   
 }
 
-// دالة لمعرفة كم يتبقى من الأوراق
+
 function calculateTotalDenominations() {
     let total = 0;
     for (const [denomination, count] of Object.entries(cashDenominations)) {
@@ -352,7 +342,7 @@ function calculateTotalDenominations() {
     return total;
 }
 
-// دالة حذف معاملة (مع ملاحظة وحذف)
+
 function deleteTransaction(id) {
     if (!confirm('هل أنت متأكد من حذف هذه المعاملة؟ لا يمكن التراجع عن هذا الإجراء.')) return;
     
@@ -365,10 +355,10 @@ function deleteTransaction(id) {
         return; 
     }
     
-    // حذف فئات النقود المقابلة للمعاملة المحذوفة 
+     
     if (deletedTransaction.denominations) {
         for (const [denomination, count] of Object.entries(deletedTransaction.denominations)) {
-            // نتأكد أننا لا نذهب تحت الصفر
+            
             cashDenominations[denomination] = Math.max(0, (cashDenominations[denomination] || 0) - count); 
         }
     }
@@ -378,7 +368,7 @@ function deleteTransaction(id) {
     saveData();
     renderTransactions();
     updateBalanceDisplay();
-    renderDenominationsDisplay(); // تحديث عرض الفئات بعد الحذف
+    renderDenominationsDisplay(); 
     
     sendDiscordNotification('DELETE_TRANS', { 
         amount: deletedTransaction.amountILS, 
@@ -387,7 +377,7 @@ function deleteTransaction(id) {
     });
 }
 
-// دالة حذف أمنية (مع Webhook)
+
 function deleteWishlistItem(id) {
     if (!confirm('هل أنت متأكد من حذف هذه الأمنية؟')) return;
     
@@ -415,7 +405,7 @@ function resetAllData() {
     localStorage.removeItem('moneyBoxTarget'); 
     localStorage.removeItem('moneyBoxWebhookUrl'); 
     localStorage.removeItem('goalReached');
-    localStorage.removeItem('cashDenominations'); // حذف الفئات النقدية 
+    localStorage.removeItem('cashDenominations');  
 
     TARGET_AMOUNT_ILS = 2100; 
     transactions = [];
@@ -425,12 +415,12 @@ function resetAllData() {
     
     renderTransactions();
     updateBalanceDisplay();
-    renderDenominationsDisplay(); // تحديث عرض الفئات
+    renderDenominationsDisplay(); 
     alert('تم إعادة ضبط جميع البيانات بنجاح.');
 }
 
 function addAutomaticTransaction(amountIls, note) {
-    const addedDenominations = addAmountToDenominations(amountIls); // إضافة الفئات 
+    const addedDenominations = addAmountToDenominations(amountIls); 
     
     const newTransaction = {
         id: Date.now(),
@@ -438,7 +428,7 @@ function addAutomaticTransaction(amountIls, note) {
         amountILS: amountIls,
         amountUSD: convertIlsToUsd(amountIls),
         note: note,
-        denominations: addedDenominations // حفظ الفئات 
+        denominations: addedDenominations  
     };
 
     transactions.push(newTransaction);
@@ -449,7 +439,7 @@ function addAutomaticTransaction(amountIls, note) {
     sendDiscordNotification('ADD', { amount: amountIls, note: note, addedDenominations: addedDenominations });
 }
 
-// دالة تذكير المصروف اليومي (مع Webhook)
+
 function checkDailyDeposit() {
     const today = new Date();
     const dayOfWeek = today.getDay(); 
@@ -486,11 +476,7 @@ function checkDailyDeposit() {
 }
 
 
-// ==========================================================
-// وظائف تحديث الواجهة (Render Functions)
-// ==========================================================
 
-// تحديث دالة العرض: التحقق من الوصول للهدف وإرسال Webhook
 function updateBalanceDisplay() {
     const totalIls = calculateTotalBalance();
     const totalUsd = convertIlsToUsd(totalIls);
@@ -507,7 +493,7 @@ function updateBalanceDisplay() {
     targetPercentageEl.textContent = percentage.toFixed(1) + '%';
     progressBarFill.style.width = percentage.toFixed(1) + '%';
 
-    // التحقق من الهدف وإرسال الإشعار
+    
     if (totalIls >= TARGET_AMOUNT_ILS && !wasGoalReached) {
         sendDiscordNotification('GOAL_REACHED', { currentTotal: totalIls, target: TARGET_AMOUNT_ILS });
         localStorage.setItem('goalReached', TARGET_AMOUNT_ILS.toFixed(2)); 
@@ -538,10 +524,10 @@ function checkTarget(currentBalance) {
 
 
 function renderTransaction(transaction) {
-    const row = transactionListEl.insertRow(0); // Add at the top
+    const row = transactionListEl.insertRow(0); 
     let denominationDetails = '';
 
-    // عرض تفاصيل فئات الإيداع 
+    
     if (transaction.denominations && Object.keys(transaction.denominations).length > 0) {
         const details = Object.entries(transaction.denominations)
             .filter(([d, c]) => c > 0)
@@ -560,8 +546,7 @@ function renderTransaction(transaction) {
 }
 
 function renderTransactions() {
-    transactionListEl.innerHTML = ''; // Clear existing
-    // Reverse the array to show the latest transactions first
+    transactionListEl.innerHTML = ''; 
     [...transactions].reverse().forEach(t => renderTransaction(t)); 
 }
 
@@ -630,12 +615,12 @@ function updateProfileModal(currentBalance) {
     profileWishlistNeededEl.textContent = itemsNeeded > 0 ? `متبقي لـ ${itemsNeeded} أمنيات.` : 'جاهز لشراء كل شيء!';
 }
 
-// 💸 دالة عرض الفئات في لوحة التحكم (المحدثة بالرموز) 💸
+
 function renderDenominationsDisplay() {
     let html = '';
     const totalDenominations = calculateTotalDenominations();
     
-    // التنبيه إذا كان مجموع الأوراق لا يساوي الرصيد الكلي
+    
     const currentTotalBalance = calculateTotalBalance();
     if (Math.abs(currentTotalBalance - totalDenominations) > 0.05) {
         html += `<p style="color:var(--danger-color); font-weight:bold; margin-bottom:15px; background: rgba(244, 67, 54, 0.1); padding: 10px; border-radius: 6px;">
@@ -643,11 +628,11 @@ function renderDenominationsDisplay() {
                 </p>`;
     }
 
-    // عرض الفئات (مرتبة من الأكبر للأصغر)
+    
     const sortedDenominations = [...DENOMINATIONS].sort((a, b) => b - a);
     sortedDenominations.forEach(d => {
         const count = cashDenominations[d] || 0;
-        if (count > 0 || d >= 1) { // عرض حتى أصغر عملة ورقية/معدنية
+        if (count > 0 || d >= 1) { 
             const type = d >= 10 ? 'ورقة' : 'قطعة';
             const icon = DENOMINATION_ICONS[d] || '<i class="fas fa-coins"></i>';
             html += `
@@ -663,7 +648,7 @@ function renderDenominationsDisplay() {
     denominationsDisplayEl.innerHTML = html || '<p class="detail-text" style="color:#aaa;">لا توجد نقود مسجلة بعد.</p>';
 }
 
-// دالة إنشاء محتوى نموذج تعديل الفئات
+
 function renderDenominationsEditForm() {
     denominationsListEditEl.innerHTML = '';
     const sortedDenominations = [...DENOMINATIONS].sort((a, b) => b - a);
@@ -683,9 +668,7 @@ function renderDenominationsEditForm() {
 }
 
 
-// ==========================================================
-// معالجات الأحداث (Event Handlers)
-// ==========================================================
+
 
 settingsButton.addEventListener('click', () => {
     settingsModal.style.display = 'block';
@@ -695,13 +678,13 @@ profileButton.addEventListener('click', () => {
     profileModal.style.display = 'block';
 });
 
-// معالج فتح نافذة تعديل الفئات 
+ 
 denominationsEditButton.addEventListener('click', () => {
     renderDenominationsEditForm();
     denominationsModal.style.display = 'block';
 });
 
-// معالج حفظ تعديلات الفئات 
+ 
 denominationsEditForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
@@ -714,7 +697,7 @@ denominationsEditForm.addEventListener('submit', (e) => {
 
     saveData();
     renderDenominationsDisplay();
-    // تحديث الرصيد الكلي بناءً على الأوراق الجديدة (هذا سيظهر التحذير إذا لم تتطابق الأرقام مع الرصيد الحقيقي)
+    
     updateBalanceDisplay(); 
     denominationsModal.style.display = 'none';
     alert('تم حفظ تعديلات فئات النقود بنجاح. قد تحتاج لإعادة تعيين الرصيد الكلي إذا كان التحذير مستمراً.');
@@ -737,7 +720,7 @@ window.addEventListener('click', (e) => {
     if (e.target === profileModal) {
         profileModal.style.display = 'none';
     }
-    if (e.target === denominationsModal) { // إغلاق نافذة الفئات 
+    if (e.target === denominationsModal) { 
         denominationsModal.style.display = 'none';
     }
 });
@@ -753,7 +736,7 @@ addTransactionForm.addEventListener('submit', (e) => {
         return;
     }
     
-    // استدعاء دالة إضافة الفئات 
+    
     const addedDenominations = addAmountToDenominations(amountIls); 
 
     const newTransaction = {
@@ -762,7 +745,7 @@ addTransactionForm.addEventListener('submit', (e) => {
         amountILS: amountIls,
         amountUSD: convertIlsToUsd(amountIls),
         note: noteText,
-        denominations: addedDenominations // حفظ الفئات التي تم إيداعها 
+        denominations: addedDenominations 
     };
 
     transactions.push(newTransaction);
@@ -777,7 +760,7 @@ addTransactionForm.addEventListener('submit', (e) => {
     transactionNoteInput.value = '';
 });
 
-// معالج إضافة أمنية 
+ 
 addWishForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = wishItemNameInput.value.trim();
@@ -806,7 +789,7 @@ addWishForm.addEventListener('submit', (e) => {
     wishItemPriceInput.value = '';
 });
 
-// معالج تغيير الهدف
+
 changeTargetForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const newTarget = parseFloat(newTargetAmountInput.value);
@@ -826,13 +809,13 @@ changeTargetForm.addEventListener('submit', (e) => {
 
 resetDataButton.addEventListener('click', resetAllData);
 
-// 🛠️ معالج زر تشغيل الموسيقى
+
 toggleMusicButton.addEventListener('click', () => {
     const isPlaying = !musicElement.paused;
     updateMusicButton(!isPlaying, true);
 });
 
-// 🛠️ معالج شريط التحكم بالصوت
+
 volumeSlider.addEventListener('input', (e) => {
     const newVolume = parseFloat(e.target.value);
     musicElement.volume = newVolume;
@@ -840,7 +823,7 @@ volumeSlider.addEventListener('input', (e) => {
     volumeValueEl.textContent = `${Math.round(newVolume * 100)}%`;
 });
 
-// 🛠️ معالج حفظ رابط الـ Webhook
+
 saveWebhookButton.addEventListener('click', () => {
     const newWebhookUrl = webhookUrlInput.value.trim();
     webhookUrl = newWebhookUrl;
@@ -848,7 +831,7 @@ saveWebhookButton.addEventListener('click', () => {
     alert('تم حفظ رابط الـ Webhook بنجاح.');
 });
 
-// 🛠️ معالج تغيير الثيم
+
 bgColorSelect.addEventListener('change', (e) => {
     applyColorTheme(e.target.value);
 });
@@ -859,11 +842,12 @@ function init() {
     renderTransactions();
     updateBalanceDisplay();
     checkDailyDeposit(); 
-    // تشغيل دالة عرض الفئات عند بدء التشغيل 
+     
     renderDenominationsDisplay(); 
 }
 
 
 init();
+
 
 
