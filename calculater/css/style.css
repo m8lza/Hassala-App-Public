@@ -1,19 +1,17 @@
-/* ==================================== */
-/* 0. الخطوط والإعدادات العامة */
-/* ==================================== */
+
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;400;700&display=swap');
 
-/* ⬅️ متغيرات الألوان للثيمات (مطابقة لطلبك) ⬅️ */
+
 :root {
     --bg-color-main: #1f014e; 
     --bg-color-secondary: #000000;
     --text-color: #f0f0f0;
-    --highlight-color: #81D4FA; /* سماوي فاتح */
-    --success-color: #4CAF50; /* أخضر */
-    --danger-color: #f44336; /* أحمر */
-    --primary-color: #00bcd4; /* أزرق سماوي */
-    --profile-color: #3f51b5; /* أزرق داكن للبروفايل */
-    --warning-color: #FFEB3B; /* أصفر للتنبيهات */
+    --highlight-color: #81D4FA; 
+    --success-color: #4CAF50; 
+    --danger-color: #f44336; 
+    --primary-color: #00bcd4;
+    --profile-color: #3f51b5; 
+    --warning-color: #FFEB3B;
 }
 
 * {
@@ -24,7 +22,7 @@
 
 body {
     font-family: 'Cairo', sans-serif; 
-    /* 🎨 تطبيق التدرج اللوني الذي طلبته */
+    
     background: linear-gradient(135deg, var(--bg-color-main) 0%, var(--bg-color-secondary) 100%); 
     color: var(--text-color);
     direction: rtl; 
@@ -33,7 +31,7 @@ body {
     transition: background 0.5s ease; 
     padding-bottom: 50px;
 }
-/* ⬅️ فئات الألوان للثيمات ⬅️ */
+ 
 body.theme-blue {
     --bg-color-main: #0d1e3d;
     --bg-color-secondary: #1c3660;
@@ -46,13 +44,12 @@ body.theme-green {
     --bg-color-main: #0d3d1c;
     --bg-color-secondary: #1c602d;
 }
-/* ------------------------------- */
 
 .container {
     max-width: 1200px; 
     margin: 0 auto;
     padding: 20px;
-    padding-top: 80px; /* **مهم:** مسافة لأسفل الأزرار الثابتة */
+    padding-top: 80px;  
 }
 
 h1 {
@@ -65,9 +62,7 @@ h1 {
 h1 i { color: var(--warning-color); margin-left: 10px; }
 
 
-/* ==================================== */
-/* 1. تأثير الزجاج (Glassmorphism) */
-/* ==================================== */
+
 .glass {
     background: rgba(255, 255, 255, 0.05); 
     border-radius: 16px;
@@ -98,9 +93,7 @@ h2 {
 }
 h2 i { margin-left: 8px; color: var(--success-color); }
 
-/* ==================================== */
-/* 2. الأزرار الثابتة (Settings & Profile) */
-/* ==================================== */
+
 .settings-btn, .profile-btn {
     position: fixed; 
     top: 20px;
@@ -137,12 +130,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
 .profile-btn:hover { background-color: #303f9f; box-shadow: 0 6px 20px rgba(63, 81, 181, 0.8); }
 .profile-btn i { transition: transform 0.3s ease; }
 .profile-btn:hover i { transform: scale(1.1); }
-/* ------------------------------- */
 
-
-/* ==================================== */
-/* 3. تنسيقات الواجهة المنبثقة (Modal) */
-/* ==================================== */
 .modal {
     display: none; 
     position: fixed; 
@@ -189,7 +177,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
 }
 
 
-/* 🛠️ تنسيقات قائمة الإعدادات */
+
 .settings-section {
     display: flex;
     flex-direction: column;
@@ -218,16 +206,16 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     margin-left: 5px;
     color: var(--primary-color);
 }
-/* تنسيق حقل الـ Webhook */
+
 #webhook-url-input {
     flex-grow: 1; 
     min-width: 150px; 
 }
-.setting-item:nth-last-child(1) { /* تحديد آخر عنصر (زر الحفظ) */
+.setting-item:nth-last-child(1) { 
     justify-content: flex-end; 
     border-bottom: none;
 }
-/* 🆕 تنسيقات شريط التحكم بالصوت */
+
 .volume-control {
     display: flex;
     align-items: center;
@@ -258,9 +246,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     min-width: 40px; 
     text-align: left;
 }
-/* ------------------------------- */
 
-/* 👤 تنسيقات واجهة البروفايل (Profile Modal) */
 .profile-header {
     text-align: center;
     padding-bottom: 20px;
@@ -340,12 +326,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     font-weight: bold;
     color: var(--highlight-color);
 }
-/* ------------------------------- */
 
-
-/* ==================================== */
-/* 4. لوحة ملخص الأداء (Summary Dashboard) */
-/* ==================================== */
 
 .summary-grid {
     display: grid;
@@ -375,7 +356,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     color: var(--success-color); 
 }
 
-/* شريط التقدم */
+
 .progress-bar-container {
     margin-top: 25px;
     padding: 10px;
@@ -408,7 +389,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     color: var(--warning-color);
 }
 
-/* تنسيق قسم تغيير الهدف */
+
 .target-control {
     padding-top: 15px;
     margin-top: 15px;
@@ -422,9 +403,7 @@ h2 i { margin-left: 8px; color: var(--success-color); }
     flex-grow: 1;
 }
 
-/* ==================================== */
-/* 5. نماذج الإدخال والأزرار والتصنيف */
-/* ==================================== */
+
 .flex-row {
     display: flex;
     gap: 25px;
@@ -515,9 +494,7 @@ button:hover {
     margin-top: 15px;
 }
 
-/* ==================================== */
-/* 6. تنسيقات فئات النقود (Denominations) */
-/* ==================================== */
+
 
 .denominations-grid {
     display: flex;
@@ -532,11 +509,11 @@ button:hover {
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
-    background: rgba(255, 255, 255, 0.08); /* خلفية خفيفة */
+    background: rgba(255, 255, 255, 0.08); 
     border-radius: 8px;
     font-size: 1.1em;
     font-weight: 400;
-    border-left: 4px solid var(--primary-color); /* شريط جانبي */
+    border-left: 4px solid var(--primary-color); 
 }
 
 .denom-value {
@@ -567,7 +544,7 @@ button:hover {
     width: 100%;
 }
 
-/* تنسيق نافذة التعديل المنبثقة للفئات */
+
 .denominations-edit-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -610,9 +587,7 @@ button:hover {
     margin-top: 5px;
 }
 
-/* ==================================== */
-/* 7. تنسيقات الجداول */
-/* ==================================== */
+
 .table-container {
     max-height: 400px; 
     overflow-y: auto;
@@ -662,13 +637,11 @@ button:hover {
     border-radius: 8px;
     font-weight: bold;
     text-align: center;
-    /* تنسيق خاص لرسالة خلاصة الأمنيات */
+   
     border: 1px solid;
 }
 
-/* ==================================== */
-/* 8. التجاوبية (Responsive Design) */
-/* ==================================== */
+
 @media (max-width: 992px) {
     .flex-row {
         flex-direction: column;
@@ -699,7 +672,7 @@ button:hover {
         margin: 20% auto;
     }
     
-    /* تعديل موقع أزرار FIXED في الموبايل */
+    
     .settings-btn {
         width: 40px;
         height: 40px;
@@ -715,7 +688,7 @@ button:hover {
         font-size: 1.5em;
     }
     
-    /* إخفاء عمود الدولار في الجدول على شاشات الموبايل */
+    
     #transactions-table th:nth-child(3), 
     #transactions-table td:nth-child(3),
     #wishlist-table th:nth-child(3),
@@ -723,7 +696,7 @@ button:hover {
         display: none;
     }
     
-    /* تعديل تنسيق الإعدادات في الموبايل */
+    
     .setting-item {
         flex-direction: column;
         align-items: flex-start; 
@@ -739,7 +712,7 @@ button:hover {
         flex-direction: row; 
     }
     
-    /* تعديل عرض فئات النقود في الموبايل */
+   
     .denomination-item {
         font-size: 1em;
         padding: 8px 10px;
@@ -758,4 +731,5 @@ button:hover {
         grid-template-columns: 1fr;
     }
 }
+
 
